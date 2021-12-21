@@ -10,37 +10,41 @@
 
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.3/pure-min.css" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.10.3/brython.min.js">  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython.min.js">  </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.10.3/brython_stdlib.min.js"> </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython_stdlib.min.js"> </script>
 
 
     <script type="text/python" >
     
 from browser import document, prompt, html, alert
+from math import *  # for sin, log, etc functions to be available
 
 
-def compute(_):
-	x = document["x"].value
+def compute(event):
+
+	x = int(document["x"].value)  # otherwise input is `str` type
 	if not x:
-		alert("You need to enter a value")
+		alert("You need to enter 'x' value")
 		return
 
-	result = float(x) * 5
+	function_code = document["function"].value
+	result = eval(function_code)
+	
 	display(x, result)
 
 
-def display(x, result) -> None:
+def display(x, result):
 
 	table = document['output']
 	cells = html.TD(x) + html.TD(result)  # "+" is  brython way to join elements
 	table <= html.TR(cells)  # "<="  special brython operator to insert element (tr into table)
-	document["x"].value = ""
+	# document["x"].value = ""  # clear input
 
 
 document["submit"].bind("click", compute)
 
+print(eval(document["function"].value))
 
     </script>
 
@@ -49,11 +53,16 @@ document["submit"].bind("click", compute)
   </head>
 
   
-  <body onload="brython()">
+  
+  
+  <body onload="brython({debug:1})">
 
+	<h1>Calculator</h1>
 
-
-	<input type="number" step=0.5 id="x" placeholder="x" />
+	function: <input type="text" id="function" placeholder="function" value="2**x"/> 
+	<br />
+	
+	argument: <input type="number" step=1 id="x" placeholder="x" value="4"/>
 
 	<button type="submit" id="submit">Ok</button>
 	
