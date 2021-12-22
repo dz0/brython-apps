@@ -1,0 +1,55 @@
+
+<!DOCTYPE html >
+
+<html>
+
+  <head>
+
+    <meta charset="utf-8"/>
+
+    <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.3/pure-min.css" />
+
+    
+    <!--
+    Brython 3.10 is out, but lets wait a bit because of silly arithmetics error
+    https://github.com/brython-dev/brython/issues/1819
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython.min.js">  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython_stdlib.min.js"> </script>
+
+    <script type="text/python" >
+    
+from browser import document, prompt, html, alert, window
+import random
+
+colors = '#0f0 #0a0 #050 #090 #990'.split()
+
+def draw(event):
+    n = int(document['n'].value)
+    for i in range(n+2):
+        for j in range(i):
+            style = {'color': random.choice(colors)}
+            document['out'] <= html.DIV( "^" * (2*j + 1), style=style )
+		
+
+document["submit"].bind("click", draw)
+
+    </script>
+
+    <style>body { padding: 30px; }</style>
+
+  </head>
+
+  
+  
+  <body onload="brython({debug:1})" defer>
+
+    <h1>Christmas Tree</h1>
+
+    count of levels: <input type="number" id="n" value="5" required /> 
+    <button type="submit" id="submit">Ok</button>    
+    
+    <div id="out" style="text-align:center; font-weight: bold"></div>
+  </body>
+ 
+</html>
