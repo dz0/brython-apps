@@ -29,7 +29,9 @@ def draw(event):
     for i in range(n+2):
         for j in range(i):
             style = {'color': random.choice(colors)}
-            document['out'] <= html.DIV( "^" * (2*j + 1), style=style )
+            text = "^" * (2*j + 1)  
+            # spec brython operator "<="  to insert new elements into target
+            document['out'] <= html.DIV( text, style=style )
 		
 
 document["submit"].bind("click", draw)
