@@ -10,48 +10,44 @@
 
     <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.3/pure-min.css" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
-
     
-<!--
+    <!--
     Brython 3.10 is out, but lets wait a bit because of silly arithmetics error
-     https://github.com/brython-dev/brython/issues/1819
--->
+    https://github.com/brython-dev/brython/issues/1819
+    -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython.min.js">  </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython_stdlib.min.js"> </script>
 
+    <!--
+    charting lib.
+    simpler alternative: https://github.com/andy31lewis/brycharts
+    -->
+    <script src="https://visualife.readthedocs.io/en/latest/_static/visualife.brython.js">  </script>
 
     <script type="text/python" >
     
 from browser import document, prompt, html, alert, window
 from math import *  # for sin, log, etc functions to be available
-import turtle  # forgets what was drawn -- raphael better in this case
-# ~ turtle.set_defaults(
-    # ~ canvwidth = 650,
-    # ~ canvheight = 650,
-    # ~ turtle_canvas_wrapper = document['turtle-div'],
-# ~ )
-turtle.bgcolor("rgb(255, 245, 230)")
-t = turtle.Turtle()
-t.goto(10, 20)
 
-# ~ paper = window.Raphael(110, 500, 320, 200)  # raphael initialization
+# chart with visualife
+from visualife.core import Plot, HtmlViewport
+drawing = HtmlViewport(document["svg"],  600, 600, "yellow")
+viewport = 100, 500, 100, 500
+x_interval = -50, 50
+y_interval = -100, 100
+pl = Plot(drawing, *viewport,*x_interval, *y_interval,axes_definition="UBLR")
+# ~ https://visualife.readthedocs.io/en/latest/api/visualife.core.Plot.html#visualife.core.Plot
 
 
 def compute(event):
 
-	x = int(document["x"].value)  # otherwise input is `str` type
-	if not x:
-		alert("You need to enter 'x' value")
-		return
-
+	x = int(document["x"].value)  # otherwise input is `str` type (ps, could also use `float`)
+	
 	function_code = document["function"].value
 	result = eval(function_code)
 	
 	display_table(x, result)
 	display_chart(x, result)
-
-	# document["x"].value = ""  # clear input
 
 
 def display_table(x, result):
@@ -61,12 +57,9 @@ def display_table(x, result):
 
 
 def display_chart(x, y):
-	# ~ turtle.goto(int(x), int(result))
-	# ~ x, y = int(x), int(result)
-	# ~ paper.circle(x, y, 5).attr("fill", "#00f")
-	t.goto(x, y)
-	turtle.done()
-
+	# ~ https://visualife.readthedocs.io/en/latest/api/visualife.core.Plot.html#visualife.core.Plot.scatter
+	pl.scatter([x],[y], colors=0, adjust_range=False)
+	pl.draw(grid=True)
 
 
 document["submit"].bind("click", compute)
@@ -85,22 +78,27 @@ document["submit"].bind("click", compute)
 
 	<h1>Calculator</h1>
 
-	f(x): <input type="text" id="function" placeholder="function" value="2**x"/> 
+<form onsubmit="return false;">  
+<!-- form triggers better validation of number input.  In order not to refresh page we add "return false" -->
+	
+	f(x): <input type="text" id="function" placeholder="function" value="2**x" required /> 
 	<br />
 	
-	x: <input type="number" step=1 id="x" placeholder="x" value="4"/>
+	x: <input type="number" step=1 id="x" placeholder="x" value="4" required />
 
 	<button type="submit" id="submit">Ok</button>
-	
+
+</form>
+
 	<hr>
+
+    <svg  id="svg" xmlns="http://www.w3.org/2000/svg" class="right" height="600" width="600"></svg>
 
     <table id="output" class="pure-table">
 		<thead><tr><th>x</th><th>result</th></tr></thead>
     </table>
 	
-<!--
-	<div id="turtle-div"  style="float:left;border:1px solid green; margin-left:50px;"></div>
--->
+    
   </body>
  
 </html>

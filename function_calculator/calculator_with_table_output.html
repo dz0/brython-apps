@@ -1,0 +1,71 @@
+<!-- index.html -->
+
+<!DOCTYPE html >
+
+<html>
+
+  <head>
+
+    <meta charset="utf-8"/>
+
+    <!-- for nicer styling (of table) -->
+    <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.3/pure-min.css" /> 
+
+    
+    <!--
+    Brython 3.10 is out, but lets wait a bit because of silly arithmetics error
+    https://github.com/brython-dev/brython/issues/1819
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.4/brython.min.js">  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.10.3/brython_stdlib.min.js"> </script>
+
+    <script type="text/python" >
+    
+from browser import document, prompt, html, alert, window
+from math import *  # for sin, log, etc functions to be available
+
+def compute(event):
+
+	x = int(document["x"].value)  # otherwise input is `str` type (ps, could also use `float`)
+	
+	function_code = document["function"].value
+	result = eval(function_code)
+	
+	display_table(x, result)
+
+
+def display_table(x, result):
+	table = document['output']
+	cells = html.TD(x) + html.TD(result)  # "+" is  brython way to join elements
+	table <= html.TR(cells)  # "<="  special brython operator to insert element (tr into table)
+
+
+document["submit"].bind("click", compute)
+
+
+    </script>
+
+
+  </head>
+
+  
+  <body onload="brython({debug:1})" defer>
+
+	<h1>Calculator</h1>
+
+	f(x): <input type="text" id="function" placeholder="function" value="2**x" /> 
+	<br />
+	
+	x: <input type="number" step=1 id="x" placeholder="x" value="4" />
+
+	<button type="submit" id="submit">Ok</button>
+
+	<hr>
+
+    <table id="output" class="pure-table">
+		<thead><tr><th>x</th><th>result</th></tr></thead>
+    </table>
+	    
+  </body>
+ 
+</html>
