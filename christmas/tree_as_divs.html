@@ -36,6 +36,12 @@ def draw(event):
 
 document["submit"].bind("click", draw)
 
+def cleanup_tree(event):
+    out_div = document['out']
+    out_div.clear()
+
+document["cleanup"].bind("click", cleanup_tree)
+
     </script>
 
     <style>body { padding: 30px; }</style>
@@ -50,6 +56,7 @@ document["submit"].bind("click", draw)
 
     count of levels: <input type="number" id="n" value="5" required /> 
     <button type="submit" id="submit">Ok</button>    
+    <button id="cleanup">Cleanup</button>
     
     <div id="out" style="text-align:center; font-weight: bold"></div>
   </body>
